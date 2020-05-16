@@ -7,7 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@middy/core": "^1.0.0",
+    "@middy/http-error-handler": "^1.0.0",
+    "@middy/http-event-normalizer": "^1.0.0",
+    "@middy/http-json-body-parser": "^1.0.0",
     "aws-sdk": "^2.678.0",
+    "http-errors": "^1.7.3",
     "source-map-support": "^0.5.10",
     "uuid": "^8.0.0"
   },
