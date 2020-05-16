@@ -22,7 +22,7 @@ export const createAuction: APIGatewayProxyHandler = async (
 
   await dynamodb
     .put({
-      TableName: "AuctionsTable",
+      TableName: process.env.AUCTIONS_TABE_NAME,
       // needs to have the `id` key as defined in serverless.yml
       Item: auction,
     })

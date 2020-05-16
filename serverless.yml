@@ -4,11 +4,6 @@ service:
 #app: your-app-name
 #org: your-org-name
 
-custom:
-  webpack:
-    webpackConfig: ./webpack.config.js
-    includeModules: true
-
 # Add the serverless-webpack plugin
 plugins:
   - serverless-webpack
@@ -23,8 +18,10 @@ provider:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    AUCTIONS_TABE_NAME: ${self:custom.AuctionsTable.name}
   iamRoleStatements:
     - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
+
 functions:
   createAuction:
     handler: src/handlers/handler.createAuction
@@ -36,3 +33,11 @@ functions:
 resources:
   Resources:
     AuctionsTable: ${file(resources/AuctionsTable.yml):AuctionsTable}
+
+custom:
+  AuctionsTable:
+    name: !Ref AuctionsTable
+    arn: !GetAtt AuctionsTable.Arn
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
