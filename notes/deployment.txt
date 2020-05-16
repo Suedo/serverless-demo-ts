@@ -1,0 +1,7 @@
+1. needed to create a new aws IAM user with programatic access as well as console access
+2. needed to create a new aws profile ( https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html ) 
+    Otherwise, sls deploy was taking default profile, which was my wingspan profile
+    In serverless.yaml file, mention newly created profile under provider:
+      profile: slsuser
+
+
