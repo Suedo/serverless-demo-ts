@@ -1,16 +1,35 @@
 import { APIGatewayProxyHandler } from "aws-lambda";
 import "source-map-support/register";
+import { v4 as uuid } from "uuid";
+import { DynamoDB } from "aws-sdk";
 
-export const hello: APIGatewayProxyHandler = async (event, _context) => {
+// static, so can stay in globalscope
+const dynamodb = new DynamoDB.DocumentClient();
+
+export const createAuction: APIGatewayProxyHandler = async (
+  event,
+  _context,
+) => {
+  const { title } = JSON.parse(event.body);
+  const now = new Date();
+
+  const auction = {
+    id: uuid(),
+    title,
+    status: "OPEN",
+    createdAt: now.toISOString(),
+  };
+
+  await dynamodb
+    .put({
+      TableName: "AuctionsTable",
+      // needs to have the `id` key as defined in serverless.yml
+      Item: auction,
+    })
+    .promise();
+
   return {
-    statusCode: 200,
-    body: JSON.stringify(
-      {
-        message: "Its Alive!",
-        input: event,
-      },
-      null,
-      2
-    ),
+    statusCode: 201,
+    body: JSON.stringify(auction),
   };
 };
