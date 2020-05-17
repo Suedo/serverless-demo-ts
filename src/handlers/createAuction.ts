@@ -5,7 +5,7 @@ import { DynamoDB } from "aws-sdk";
 
 import * as createError from "http-errors";
 
-import { Auction, TaskStatus } from "../models/auction";
+import { Auction, TaskStatus, Bid } from "../models/auction";
 import { middify } from "../lib/commonMiddleware";
 
 // static, so can stay in globalscope
@@ -23,6 +23,7 @@ let createAuction: APIGatewayProxyHandler = async (event, _context) => {
     title,
     status: TaskStatus.OPEN,
     createdAt: now,
+    highestBid: new Bid(),
   };
 
   try {

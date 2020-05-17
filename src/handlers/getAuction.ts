@@ -10,9 +10,8 @@ import { middify } from "../lib/commonMiddleware";
 // static, so can stay in globalscope
 const dynamodb = new DynamoDB.DocumentClient();
 
-let getAuction: APIGatewayProxyHandler = async (event, _context) => {
+export const getAuctionById = async (id: string) => {
   let auction;
-  const { id } = event.pathParameters;
 
   try {
     const result = await dynamodb
@@ -28,6 +27,13 @@ let getAuction: APIGatewayProxyHandler = async (event, _context) => {
   if (!auction) {
     throw new createError.NotFound(`Auction with ID ${id} was not found`);
   }
+
+  return auction;
+};
+
+let getAuction: APIGatewayProxyHandler = async (event, _context) => {
+  const { id } = event.pathParameters;
+  const auction = await getAuctionById(id);
 
   return {
     statusCode: 200,
