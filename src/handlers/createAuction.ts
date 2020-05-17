@@ -3,27 +3,26 @@ import "source-map-support/register";
 import { v4 as uuid } from "uuid";
 import { DynamoDB } from "aws-sdk";
 
-import middy from "@middy/core";
-import jsonBodyParser from "@middy/http-json-body-parser";
-import httpErrorHandler from "@middy/http-error-handler";
-import httpEventNormalizer from "@middy/http-event-normalizer";
-// const validator = require("@middy/validator");
-
 import * as createError from "http-errors";
+
+import { Auction, TaskStatus } from "../models/auction";
+import { middify } from "../lib/commonMiddleware";
 
 // static, so can stay in globalscope
 const dynamodb = new DynamoDB.DocumentClient();
 
-let create_Auction: APIGatewayProxyHandler = async (event, _context) => {
+let createAuction: APIGatewayProxyHandler = async (event, _context) => {
   // jsonBodyParser will aotomatically parse it for us
+
+  // eslint-disable-next-line
   const { title } = event.body;
   const now = new Date();
 
-  const auction = {
+  const auction: Auction = {
     id: uuid(),
     title,
-    status: "OPEN",
-    createdAt: now.toISOString(),
+    status: TaskStatus.OPEN,
+    createdAt: now,
   };
 
   try {
@@ -45,7 +44,4 @@ let create_Auction: APIGatewayProxyHandler = async (event, _context) => {
   };
 };
 
-export const createAuction = middy(create_Auction)
-  .use(jsonBodyParser())
-  .use(httpEventNormalizer())
-  .use(httpErrorHandler());
+export const handler = middify(createAuction);

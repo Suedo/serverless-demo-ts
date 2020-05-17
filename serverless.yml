@@ -24,11 +24,25 @@ provider:
 
 functions:
   createAuction:
-    handler: src/handlers/handler.createAuction
+    handler: src/handlers/createAuction.handler
     events:
       - http:
           method: post
           path: auction
+
+  getAuctions:
+    handler: src/handlers/getAuctions.handler
+    events:
+      - http:
+          method: get
+          path: auctions
+
+  getAuctionByID:
+    handler: src/handlers/getAuction.byID
+    events:
+      - http:
+          method: get
+          path: auction/{id}
 
 resources:
   Resources:
