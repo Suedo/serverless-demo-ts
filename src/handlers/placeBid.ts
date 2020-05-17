@@ -1,12 +1,12 @@
-import { APIGatewayProxyHandler } from "aws-lambda";
-import "source-map-support/register";
-import { DynamoDB } from "aws-sdk";
+import { APIGatewayProxyHandler } from 'aws-lambda';
+import 'source-map-support/register';
+import { DynamoDB } from 'aws-sdk';
 
-import * as createError from "http-errors";
+import * as createError from 'http-errors';
 
-import { Auction, TaskStatus } from "../models/auction";
-import { middify } from "../lib/commonMiddleware";
-import { getAuctionById } from "./getAuction";
+import { Auction, TaskStatus } from '../models/auction';
+import { middify } from '../lib/commonMiddleware';
+import { getAuctionById } from './getAuction';
 
 // static, so can stay in globalscope
 const dynamodb = new DynamoDB.DocumentClient();
@@ -29,11 +29,11 @@ let placeBid: APIGatewayProxyHandler = async (event, _context) => {
   const updateParams = {
     TableName: process.env.AUCTIONS_TABE_NAME,
     Key: { id },
-    UpdateExpression: "set highestBid.amount = :amount",
+    UpdateExpression: 'set highestBid.amount = :amount',
     ExpressionAttributeValues: {
-      ":amount": amount,
+      ':amount': amount,
     },
-    ReturnValues: "ALL_NEW", // telling DynamoDB to only return newly created entries
+    ReturnValues: 'ALL_NEW', // telling DynamoDB to only return newly created entries
   };
 
   try {

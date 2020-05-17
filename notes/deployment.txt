@@ -19,3 +19,15 @@ serverless.yml config for new DynamoDB table:
          KeySchema:
            - AttributeName: id
              KeyType: HASH
+
+getting logs of cron events (invoked through `rate` event rule)
+sls logs -f processAuctions --startTime 1h // to get logs of the function processAuctions for last 1 hour
+sls logs -f processAuctions --startTime 1m // for last 1 minute
+sls logs -f processAuctions // all logs. (for me shows only last 10)
+
+Where can you see these rules:
+Amazon EventBridge > Events > select ur event > Rules
+
+
+If you want to keep the event off, but invoke your function manually:
+sls invoke -f processAuctions -l 

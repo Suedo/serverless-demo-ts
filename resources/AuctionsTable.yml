@@ -6,6 +6,21 @@ AuctionsTable: # logical id of resource
     AttributeDefinitions:
       - AttributeName: id
         AttributeType: S
+      - AttributeName: status
+        AttributeType: S
+      - AttributeName: endingAt
+        AttributeType: S
     KeySchema:
       - AttributeName: id
         KeyType: HASH
+    # something like, creates a virtual copy of your table with index as defined below
+    GlobalSecondaryIndexes:
+      - IndexName: statusAndEndDate
+        KeySchema:
+          - AttributeName: status # partition key
+            KeyType: HASH
+          - AttributeName: endingAt # sort key
+            KeyType: RANGE
+        # the attributes available in the virtual copy
+        Projection:
+          ProjectionType: ALL

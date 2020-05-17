@@ -2,8 +2,8 @@ export class Auction {
   id: string;
   title: string;
   status: TaskStatus;
-  createdAt: string;
-  endingAt: string;
+  createdAt: Date;
+  endingAt: Date;
   highestBid: Bid;
 }
 
