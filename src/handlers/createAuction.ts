@@ -5,7 +5,7 @@ import { DynamoDB } from 'aws-sdk';
 
 import * as createError from 'http-errors';
 
-import { Auction, TaskStatus, Bid } from '../models/auction';
+import { Auction, AuctionStatus, Bid } from '../models/auction';
 import { middify } from '../lib/commonMiddleware';
 
 // static, so can stay in globalscope
@@ -25,7 +25,7 @@ let createAuction: APIGatewayProxyHandler = async (event, _context) => {
   const auction: Auction = {
     id: uuid(),
     title,
-    status: TaskStatus.OPEN,
+    status: AuctionStatus.OPEN,
     createdAt: now.toISOString(),
     // without this manual string conversion, DynamoDB would complain saying endingAt index type of string doesnt match:
     // message: 'One or more parameter values were invalid: Type mismatch for Index Key endingAt Expected: S Actual: M IndexName: statusAndEndDate',

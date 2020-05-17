@@ -1,16 +1,16 @@
 export class Auction {
   id: string;
   title: string;
-  status: TaskStatus;
+  status: AuctionStatus;
   createdAt: string;
   endingAt: string;
   highestBid: Bid;
 }
 
-export enum TaskStatus {
+export enum AuctionStatus {
   OPEN = 'OPEN',
   IN_PROGRESS = 'IN_PROGRESS',
-  DONE = 'DONE',
+  CLOSED = 'CLOSED',
 }
 
 export class Bid {

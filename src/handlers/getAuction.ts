@@ -1,11 +1,11 @@
-import { APIGatewayProxyHandler } from "aws-lambda";
-import "source-map-support/register";
-import { DynamoDB } from "aws-sdk";
+import { APIGatewayProxyHandler } from 'aws-lambda';
+import 'source-map-support/register';
+import { DynamoDB } from 'aws-sdk';
 
-import * as createError from "http-errors";
+import * as createError from 'http-errors';
 
-import { Auction, TaskStatus } from "../models/auction";
-import { middify } from "../lib/commonMiddleware";
+import { Auction, AuctionStatus } from '../models/auction';
+import { middify } from '../lib/commonMiddleware';
 
 // static, so can stay in globalscope
 const dynamodb = new DynamoDB.DocumentClient();
@@ -28,7 +28,7 @@ export const getAuctionById = async (id: string) => {
     throw new createError.NotFound(`Auction with ID ${id} was not found`);
   }
 
-  return auction;
+  return auction as Auction;
 };
 
 let getAuction: APIGatewayProxyHandler = async (event, _context) => {

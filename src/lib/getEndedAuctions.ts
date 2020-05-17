@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk';
 import { QueryInput } from 'aws-sdk/clients/dynamodb';
-import { TaskStatus } from '../models/auction';
+import { AuctionStatus } from '../models/auction';
 
 const dynamodb = new DynamoDB.DocumentClient();
 
@@ -18,7 +18,7 @@ export const getEndedAuctions = async () => {
     },
     // TS complains, but this is the correct way of writing it
     ExpressionAttributeValues: {
-      ':status': TaskStatus.OPEN,
+      ':status': AuctionStatus.OPEN,
       ':now': now.toISOString(),
     },
   };

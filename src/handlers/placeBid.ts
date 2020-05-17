@@ -4,7 +4,7 @@ import { DynamoDB } from 'aws-sdk';
 
 import * as createError from 'http-errors';
 
-import { Auction, TaskStatus } from '../models/auction';
+import { Auction, AuctionStatus } from '../models/auction';
 import { middify } from '../lib/commonMiddleware';
 import { getAuctionById } from './getAuction';
 
@@ -18,6 +18,10 @@ let placeBid: APIGatewayProxyHandler = async (event, _context) => {
 
   // get existing auction
   const auction = await getAuctionById(id);
+
+  if (auction.status == AuctionStatus.CLOSED) {
+    throw new createError.Forbidden('Auction is closed, cannot place bid');
+  }
 
   // check for highest bid
   if (amount < auction.highestBid.amount) {
