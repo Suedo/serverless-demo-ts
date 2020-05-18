@@ -7,6 +7,7 @@ import * as createError from 'http-errors';
 
 import { Auction, AuctionStatus, Bid } from '../models/auction';
 import { middify } from '../lib/commonMiddleware';
+import { PutItemInput } from 'aws-sdk/clients/dynamodb';
 
 // static, so can stay in globalscope
 const dynamodb = new DynamoDB.DocumentClient();
@@ -33,14 +34,14 @@ let createAuction: APIGatewayProxyHandler = async (event, _context) => {
     highestBid: new Bid(),
   };
 
+  const inputParams: PutItemInput = {
+    TableName: process.env.AUCTIONS_TABE_NAME,
+    // needs to have the `id` key as defined in serverless.yml
+    Item: auction,
+  };
+
   try {
-    await dynamodb
-      .put({
-        TableName: process.env.AUCTIONS_TABE_NAME,
-        // needs to have the `id` key as defined in serverless.yml
-        Item: auction,
-      })
-      .promise();
+    await dynamodb.put(inputParams).promise();
   } catch (error) {
     console.error(error);
     throw new createError.InternalServerError();
