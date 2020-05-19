@@ -5,6 +5,8 @@ import { DynamoDB } from 'aws-sdk';
 import * as createError from 'http-errors';
 
 import { Auction, AuctionStatus } from '../models/auction';
+import validator from '@middy/validator';
+import { getAuctionsSchema } from '../schemas/getAuctionsSchema';
 import { middify } from '../lib/commonMiddleware';
 import { QueryInput } from 'aws-sdk/clients/dynamodb';
 
@@ -50,4 +52,8 @@ let getAuctions: APIGatewayProxyHandler = async (
   };
 };
 
-export const handler = middify(getAuctions);
+export const handler = middify(getAuctions).use(
+  validator({
+    inputSchema: getAuctionsSchema,
+  }),
+);
