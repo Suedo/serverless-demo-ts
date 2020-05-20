@@ -16,4 +16,5 @@ export enum AuctionStatus {
 
 export class Bid {
   amount: number = 0;
+  bidder: string;
 }

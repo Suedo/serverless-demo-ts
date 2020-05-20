@@ -16,6 +16,8 @@ let placeBid: APIGatewayProxyHandler = async (event, _context) => {
   const { id } = event.pathParameters;
   const { amount } = event.body;
 
+  const { email } = event.requestContext.authorizer;
+
   // get existing auction
   const auction = await getAuctionById(id);
 
@@ -23,8 +25,16 @@ let placeBid: APIGatewayProxyHandler = async (event, _context) => {
     throw new createError.Forbidden('Auction is closed, cannot place bid');
   }
 
-  // check for highest bid
+  if (auction.seller === email) {
+    throw new createError.Forbidden('You cannot bid on your own auctions!');
+  }
+
+  if (email === auction.highestBid.bidder) {
+    throw new createError.Forbidden('You are already Highest Bidder');
+  }
+
   if (amount < auction.highestBid.amount) {
+    // check for highest bid
     throw new createError.Forbidden(
       `Your bid must be higher than the current highest bid: ${auction.highestBid.amount}`,
     );
@@ -33,9 +43,11 @@ let placeBid: APIGatewayProxyHandler = async (event, _context) => {
   const updateParams = {
     TableName: process.env.AUCTIONS_TABE_NAME,
     Key: { id },
-    UpdateExpression: 'set highestBid.amount = :amount',
+    UpdateExpression:
+      'set highestBid.amount = :amount, highestBid.bidder = :bidder',
     ExpressionAttributeValues: {
       ':amount': amount,
+      ':bidder': email,
     },
     ReturnValues: 'ALL_NEW', // telling DynamoDB to only return newly created entries
   };
