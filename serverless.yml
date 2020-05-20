@@ -14,6 +14,7 @@ provider:
   runtime: nodejs12.x
   profile: slsuser
   region: ap-south-1
+  stage: ${opt:stage, 'dev'}
   apiGateway:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
   environment:
@@ -29,6 +30,7 @@ functions:
       - http:
           method: post
           path: auction
+          authorizer: ${self:custom.authorizer}
 
   getAuctions:
     handler: src/handlers/getAuctions.handler
@@ -36,6 +38,7 @@ functions:
       - http:
           method: get
           path: auctions
+          authorizer: ${self:custom.authorizer}
 
   getAuctionByID:
     handler: src/handlers/getAuction.byID
@@ -43,6 +46,7 @@ functions:
       - http:
           method: get
           path: auction/{id}
+          authorizer: ${self:custom.authorizer}
 
   placeBid:
     handler: src/handlers/placeBid.handler
@@ -50,6 +54,7 @@ functions:
       - http:
           method: patch
           path: auction/{id}/bid
+          authorizer: ${self:custom.authorizer}
 
   processAuctions:
     handler: src/handlers/processAuctions.handler
@@ -62,9 +67,13 @@ resources:
     AuctionsTable: ${file(resources/AuctionsTable.yml):AuctionsTable}
 
 custom:
+  authorizer: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:auth-service-${self:provider.stage}-auth
   AuctionsTable:
     name: !Ref AuctionsTable
     arn: !GetAtt AuctionsTable.Arn
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
+#
+# ${self:provider.stage} : stage is a serverless property, so doesnt need #{}
+# #{AWS::Region} : Region is an AWS/Cloudformation property, so needs #{}

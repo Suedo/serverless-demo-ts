@@ -1,0 +1,5 @@
+Using github login for Auth0
+
+Create a new serverless app:
+  sls create --template aws-nodejs-typescript
+
