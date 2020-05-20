@@ -5,6 +5,7 @@ export class Auction {
   createdAt: string;
   endingAt: string;
   highestBid: Bid;
+  seller: string;
 }
 
 export enum AuctionStatus {

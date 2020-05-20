@@ -17,6 +17,10 @@ let createAuction: APIGatewayProxyHandler = async (event, _context) => {
 
   // eslint-disable-next-line
   const { title } = event.body;
+
+  // since user is validated (thru auth0), user's claims, info will be available on the event.requestContext
+  const { email } = event.requestContext.authorizer;
+
   const now = new Date();
   const endDate = new Date();
   endDate.setHours(now.getHours() + 1);
@@ -32,6 +36,7 @@ let createAuction: APIGatewayProxyHandler = async (event, _context) => {
     // message: 'One or more parameter values were invalid: Type mismatch for Index Key endingAt Expected: S Actual: M IndexName: statusAndEndDate',
     endingAt: endDate.toISOString(),
     highestBid: new Bid(),
+    seller: email,
   };
 
   const inputParams: PutItemInput = {
