@@ -3,3 +3,10 @@ Using github login for Auth0
 Create a new serverless app:
   sls create --template aws-nodejs-typescript
 
+One serverless stack OUTPUTS a value for its resource, in the resources section
+Other Serverless stack imports it.
+  1. in custom section: creates a section for it
+  2. those values are then used inside the provider section. The environment section of the provider defines variables with the values from the custom section
+  3. Now these environment variables can be used throughout the project, in IAM roles etc
+
+^^ Note: One can use pseudo-parameters, but this 'Outputs' and importing.. is a better/cooler way of doing things 

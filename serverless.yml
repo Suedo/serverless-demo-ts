@@ -20,8 +20,10 @@ provider:
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     AUCTIONS_TABE_NAME: ${self:custom.AuctionsTable.name}
+    MAIL_QUEUE_URL: ${self:custom.MailQueue.url}
   iamRoleStatements:
     - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
+    - ${file(iam/MailQueueIAM.yml):MailQueueIAM}
 
 functions:
   createAuction:
@@ -71,6 +73,12 @@ custom:
   AuctionsTable:
     name: !Ref AuctionsTable
     arn: !GetAtt AuctionsTable.Arn
+  # These will be used in IAM files
+  MailQueue:
+    # Notification service exposes these as OUTPUTS
+    # serverless variables help import them. cf is for cloudformation
+    arn: ${cf:notification-service-ts-${self:provider.stage}.MailQueueArn}
+    url: ${cf:notification-service-ts-${self:provider.stage}.MailQueueUrl}
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
