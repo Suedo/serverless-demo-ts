@@ -8,6 +8,7 @@ service:
 plugins:
   - serverless-webpack
   - serverless-pseudo-parameters
+  - serverless-dotenv-plugin # https://www.serverless.com/plugins/serverless-dotenv-plugin/
 
 provider:
   name: aws
@@ -21,6 +22,7 @@ provider:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     AUCTIONS_TABE_NAME: ${self:custom.AuctionsTable.name}
     MAIL_QUEUE_URL: ${self:custom.MailQueue.url}
+    SOURCE_EMAIL: ${env:SOURCE_EMAIL}
   iamRoleStatements:
     - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
     - ${file(iam/MailQueueIAM.yml):MailQueueIAM}
@@ -82,6 +84,8 @@ custom:
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
+  dotenv:
+    logging: false
 #
 # ${self:provider.stage} : stage is a serverless property, so doesnt need #{}
 # #{AWS::Region} : Region is an AWS/Cloudformation property, so needs #{}
